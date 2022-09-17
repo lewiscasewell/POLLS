@@ -37,17 +37,17 @@ const Home: NextPage = () => {
   if (isLoading || !data) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col p-6">
       <Head>
         <title>Start a poll</title>
         <meta name="description" content="Got a question? Start a poll" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-4">
         <QuestionCreator />
         <div>
-          <h1 className="text-2xl font-bold">Questions asked</h1>
-          <div className="flex flex-col-reverse">
+          <h1 className="text-2xl font-bold mb-3">Questions asked</h1>
+          <div className="flex flex-col-reverse gap-2">
             {data.map((i) => (
               <span key={i.id}>{i.question}</span>
             ))}
