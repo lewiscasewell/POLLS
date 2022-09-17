@@ -1,6 +1,33 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import React from "react";
 import { trpc } from "../utils/trpc";
+
+const QuestionCreator: React.FC = () => {
+  const client = trpc.useContext();
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const { mutate, isLoading } = trpc.useMutation("questions.create", {
+    onSuccess: () => {
+      client.invalidateQueries("questions.get-all");
+      if (!inputRef.current) return;
+      inputRef.current.value = "";
+    },
+  });
+
+  return (
+    <input
+      ref={inputRef}
+      disabled={isLoading}
+      placeholder="Ask a question..."
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          mutate({ question: event.currentTarget.value });
+          event.currentTarget.value = "";
+        }
+      }}
+    />
+  );
+};
 
 const Home: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(["questions.get-all"]);
@@ -10,13 +37,23 @@ const Home: NextPage = () => {
   if (isLoading || !data) return <div>Loading...</div>;
 
   return (
-    <div className="text-2xl">
+    <div className="flex flex-col">
       <Head>
         <title>Start a poll</title>
         <meta name="description" content="Got a question? Start a poll" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>{data[0]?.question}</div>
+      <div className="flex flex-col">
+        <QuestionCreator />
+        <div>
+          <h1 className="text-2xl font-bold">Questions asked</h1>
+          <div className="flex flex-col-reverse">
+            {data.map((i) => (
+              <span key={i.id}>{i.question}</span>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
