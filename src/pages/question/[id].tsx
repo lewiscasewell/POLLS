@@ -8,7 +8,17 @@ const QuestionPageContent: React.FC<{ id: string }> = ({ id }) => {
     return <div>Question not found</div>;
   }
 
-  return <div>{data?.question}</div>;
+  return (
+    <div className="p-8 flex flex-col">
+      {data?.isOwner && <div>You made this question!</div>}
+      <h1 className="font-bold text-2xl">{data?.question?.question}</h1>
+      <div>
+        {(data?.question?.options as string[])?.map((option) => (
+          <div key={option}>{option}</div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const QuestionPage = () => {
