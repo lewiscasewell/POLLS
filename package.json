@@ -10,14 +10,17 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.8",
     "@prisma/client": "^4.3.1",
     "@trpc/client": "^9.27.2",
     "@trpc/next": "^9.27.2",
     "@trpc/react": "^9.27.2",
     "@trpc/server": "^9.27.2",
+    "daisyui": "^2.28.0",
     "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.35.0",
     "react-query": "^3.39.2",
     "superjson": "^1.10.0",
     "zod": "^3.19.1"
