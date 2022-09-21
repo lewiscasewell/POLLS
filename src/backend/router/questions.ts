@@ -1,6 +1,7 @@
 import * as trpc from "@trpc/server";
 import { createNextApiHandler } from "@trpc/server/adapters/next";
 import { initScriptLoader } from "next/script";
+import { createDeflate } from "zlib";
 import { z } from "zod";
 import { prisma } from "../../db/client";
 import { createQuestionValidator } from "../../shared/create-question-validator";
@@ -9,7 +10,11 @@ import { createRouter } from "./context";
 export const questionRouter = createRouter()
   .query("get-all", {
     async resolve() {
-      return await prisma.pollQuestion.findMany();
+      return await prisma.pollQuestion.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
     },
   })
   .query("get-all-my-questions", {

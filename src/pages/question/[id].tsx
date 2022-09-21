@@ -20,8 +20,6 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
     }
   );
 
-  console.log(voteResponse);
-
   if (!data || !data?.question) {
     return <div>Question not found</div>;
   }
@@ -75,6 +73,12 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
                     value={data?.votes?.[index]?._count ?? 0}
                     max={totalVotes}
                   ></progress>
+                  <p>
+                    {!data?.votes?.[index]?._count
+                      ? "No"
+                      : data?.votes?.[index]?._count}{" "}
+                    {data?.votes?.[index]?._count === 1 ? "vote" : "votes"}
+                  </p>
                 </div>
               );
             }

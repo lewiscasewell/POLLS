@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   if (myQuestionsIsLoading || !myQuestions) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col p-6 max-w-2xl mx-auto h-full min-h-screen">
+    <div className="flex flex-col p-6 max-w-5xl mx-auto h-full min-h-screen">
       <Head>
         <title>Start a poll</title>
         <meta name="description" content="Got a question? Start a poll" />
@@ -71,16 +71,25 @@ const Home: NextPage = () => {
               <option>My questions</option>
             </select> */}
           </div>
-          <div className="flex flex-col-reverse gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 grid-">
             {allQuestions.map((question) => {
               return (
                 <Link key={question.id} href={`/question/${question.id}`}>
-                  <div className="flex flex-col bg-gray-900 p-3 rounded-lg cursor-pointer shadow-lg">
-                    <a className="font-semibold text-lg">{question.question}</a>
-
-                    <span className=" text-xs">
-                      {question.createdAt.toDateString()}
-                    </span>
+                  <div className="flex flex-col bg-gray-900/30 rounded-lg cursor-pointer shadow-lg h-[240px]">
+                    <div className="h-full flex justify-center items-center text-center">
+                      <div>
+                        <h1 className="text-6xl ">20</h1>
+                        <p>votes</p>
+                      </div>
+                    </div>
+                    <div className="p-3 flex flex-col bg-gray-900 rounded-b-lg">
+                      <a className="font-semibold text-lg text-pink-400">
+                        {question.question}
+                      </a>
+                      <span className=" text-xs">
+                        {question.createdAt.toDateString()}
+                      </span>
+                    </div>
                   </div>
                 </Link>
               );
