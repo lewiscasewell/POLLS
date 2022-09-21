@@ -22,7 +22,7 @@ const CreateQuestionForm = () => {
   } = useForm<CreateQuestionInputType>({
     resolver: zodResolver(createQuestionValidator),
     defaultValues: {
-      options: [{ text: "Yes" }, { text: "No" }],
+      options: [{ text: "" }, { text: "" }],
     },
   });
 
@@ -48,7 +48,7 @@ const CreateQuestionForm = () => {
   return (
     <div className="min-h-screen p-6 antialiased text-gray-100">
       <Head>
-        <title>Create | OnAVote</title>
+        <title>Start a poll</title>
       </Head>
       <header className="flex justify-between w-full header">
         <Link href={"/"}>
@@ -75,7 +75,7 @@ const CreateQuestionForm = () => {
                 {...register("question")}
                 type="text"
                 className="block w-full text-gray-500 rounded-md input input-bordered"
-                placeholder="How do magnets work?"
+                placeholder="Type a question..."
               />
               {errors.question && (
                 <p className="text-red-400">{errors.question.message}</p>
@@ -90,7 +90,7 @@ const CreateQuestionForm = () => {
                       key={field.id}
                     >
                       <input
-                        placeholder="Another option"
+                        placeholder="Type an option..."
                         {...register(`options.${index}.text`, {
                           required: true,
                         })}

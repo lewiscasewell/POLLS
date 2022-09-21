@@ -1,5 +1,6 @@
 import * as trpc from "@trpc/server";
 import { createNextApiHandler } from "@trpc/server/adapters/next";
+import { initScriptLoader } from "next/script";
 import { z } from "zod";
 import { prisma } from "../../db/client";
 import { createQuestionValidator } from "../../shared/create-question-validator";
@@ -34,7 +35,57 @@ export const questionRouter = createRouter()
         },
       });
 
-      return { question, isOwner: question?.ownerToken === ctx.token };
+      const myVote = await prisma.vote.findFirst({
+        where: {
+          questionId: input.id,
+          voterToken: ctx.token,
+        },
+      });
+
+      const rest = {
+        question,
+        vote: myVote,
+        isOwner: question?.ownerToken === ctx.token,
+      };
+
+      if (rest.vote || rest.isOwner) {
+        const votes = await prisma.vote.groupBy({
+          where: {
+            questionId: input.id,
+          },
+          by: ["choice"],
+          _count: true,
+        });
+
+        return {
+          ...rest,
+          votes,
+        };
+      }
+
+      return { ...rest, votes: undefined };
+    },
+  })
+  .mutation("vote-on-question", {
+    input: z.object({
+      questionId: z.string(),
+      option: z.number().min(0).max(10),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.token) throw new Error("Unauthroized");
+      await prisma.vote.create({
+        data: {
+          questionId: input.questionId,
+          choice: input.option,
+          voterToken: ctx.token,
+        },
+      });
+
+      return await prisma.vote.groupBy({
+        where: { questionId: input.questionId },
+        by: ["choice"],
+        _count: true,
+      });
     },
   })
   .mutation("create", {
