@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { trpc } from "../utils/trpc";
 import { add } from "date-fns";
 
@@ -14,9 +14,10 @@ import Head from "next/head";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 
-const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
+const CreateQuestionForm: React.FC = () => {
   const router = useRouter();
-
+  const questionUrl = router.asPath.split("/create?")[1]?.replace(/%20/g, " ");
+  console.log();
   const tomorrow = add(new Date(), { days: 1 });
   const {
     register,
@@ -26,7 +27,7 @@ const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
   } = useForm<CreateQuestionInputType>({
     resolver: zodResolver(createQuestionValidator),
     defaultValues: {
-      question: search,
+      question: questionUrl,
       endsAt: tomorrow,
       options: [{ text: "" }, { text: "" }],
     },
@@ -51,29 +52,26 @@ const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
       </div>
     );
 
-  console.log(errors);
-
   return (
-    <div className="min-h-screen p-6 antialiased text-gray-100">
+    <div className="min-h-screen max-w-5xl mx-auto p-6 antialiased text-gray-100">
       <Head>
         <title>Start a poll</title>
       </Head>
-      <header className="flex justify-between w-full header">
+      <header className="flex justify-between w-full">
         <Link href={"/"}>
           <h1 className="text-lg font-bold cursor-pointer">Back</h1>
         </Link>
       </header>
-      <div className="max-w-xl py-12 mx-auto md:max-w-2xl">
+      <div className=" max-w-2xl mx-auto mt-12">
         <h2 className="text-2xl font-bold">Create a new poll</h2>
-
         <form
           onSubmit={handleSubmit((data) => {
             mutate(data);
           })}
           className="w-full"
         >
-          <div className="w-full mt-8">
-            <div className="w-full my-10 form-control">
+          <div className="w-full">
+            <div className="w-full">
               <label className="label">
                 <span className="text-base font-semibold label-text">
                   Your Question
@@ -82,14 +80,14 @@ const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
               <input
                 {...register("question")}
                 type="text"
-                className="block w-full text-gray-500 rounded-md input input-bordered"
+                className="w-full rounded-md p-3 bg-gray-900/70 mb-4"
                 placeholder="Type a question..."
               />
               {errors.question && (
                 <p className="text-red-400">{errors.question.message}</p>
               )}
             </div>
-            <div className="grid w-full grid-cols-1 gap-x-5 gap-y-3 md:grid-cols-2">
+            <div className="grid gap-4 w-full grid-cols-1 md:grid-cols-2">
               {fields.map((field, index) => {
                 return (
                   <div key={field.id}>
@@ -102,7 +100,7 @@ const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
                         {...register(`options.${index}.text`, {
                           required: true,
                         })}
-                        className="w-full font-medium text-gray-500 input input-bordered"
+                        className="w-full font-medium rounded-md p-3 bg-gray-900/70"
                       />
                       <button type="button" onClick={() => remove(index)}>
                         <svg
@@ -125,20 +123,20 @@ const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
                 );
               })}
             </div>
-            <div className="flex items-center my-3">
+            <div className="flex items-center justify-center my-6">
               <button
                 type="button"
                 value="Add more options"
-                className="btn btn-ghost"
+                className="border-2 rounded-md p-2"
                 onClick={() => append({ text: "" })}
               >
-                Add options
+                Add another option
               </button>
             </div>
             <div className="w-full mt-10">
               <input
                 type="submit"
-                className="w-full btn"
+                className="bg-gray-700/50 w-full p-2 font-bold rounded-md hover:bg-gray-700 transition-colors ease-in"
                 value="Create question"
               />
             </div>
@@ -149,16 +147,8 @@ const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
   );
 };
 
-const QuestionCreator: React.FC<{ search: string }> = ({ search }) => {
-  return <CreateQuestionForm search={search} />;
+const QuestionCreator: React.FC = () => {
+  return <CreateQuestionForm />;
 };
 
 export default QuestionCreator;
-
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  return {
-    props: {
-      search: query.search || null,
-    },
-  };
-};

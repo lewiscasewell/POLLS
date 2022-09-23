@@ -2,10 +2,11 @@ import { PollQuestion, Prisma, Vote } from "@prisma/client";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { optional } from "zod";
 import { trpc } from "../../utils/trpc";
+import { getBaseUrl } from "../_app";
 
 const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
+  const router = useRouter();
   const { data } = trpc.useQuery(["questions.get-by-id", { id }]);
   let totalVotes = 0;
 
@@ -54,10 +55,10 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
     });
   }
 
-  console.log(merged);
+  const shareLink = `polls.lewiscasewell.com${router.asPath}`;
 
   return (
-    <div className="max-w-2xl min-h-screen p-6 mx-auto">
+    <div className="max-w-5xl p-6 mx-auto min-h-screen">
       <Head>
         <title>Question | {data?.question?.question}</title>
       </Head>
@@ -70,7 +71,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
         )}
       </header>
 
-      <main>
+      <main className="max-w-2xl mx-auto h-full">
         <>
           <h1 className="mb-10 text-2xl font-bold text-center">
             {data?.question?.question}
@@ -146,7 +147,10 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
               </button>
             </Link>
           )}
-          <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
+          <button
+            onClick={() => navigator.clipboard.writeText(shareLink)}
+            className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30"
+          >
             Share question
           </button>
         </div>

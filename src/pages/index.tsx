@@ -9,7 +9,7 @@ const QuestionCards = dynamic(import("../components/QuestionCards"));
 const Home: NextPage = () => {
   const [search, setSearch] = React.useState("");
   return (
-    <div className="flex flex-col p-6 max-w-5xl mx-auto h-full min-h-screen">
+    <div className="flex flex-col p-6 max-w-5xl bg-gray-800 mx-auto h-full min-h-screen">
       <Head>
         <title>Start a poll</title>
         <meta name="description" content="Got a question? Start a poll" />

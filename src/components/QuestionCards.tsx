@@ -76,8 +76,6 @@ const QuestionCards: React.FC<{ search: string }> = ({ search }) => {
       </div>
     );
 
-  console.log(data);
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-center items-baseline">
