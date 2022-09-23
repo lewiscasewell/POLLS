@@ -1,4 +1,5 @@
 import { PollQuestion, Prisma, Vote } from "@prisma/client";
+import { url } from "inspector";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -66,7 +67,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   return (
     <div className="max-w-5xl p-6 mx-auto min-h-screen">
       <Head>
-        <title>Question | {data?.question?.question}</title>
+        <title>{data?.question?.question}</title>
       </Head>
       <header className="flex items-center justify-between w-full mb-10">
         <Link href={"/"}>
@@ -154,7 +155,13 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
             </Link>
           )}
           <button
-            onClick={() => navigator.clipboard.writeText(shareLink)}
+            onClick={() =>
+              navigator.share({
+                title: data.question?.question,
+                text: data.question?.question,
+                url: shareLink,
+              })
+            }
             className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30"
           >
             Share question
