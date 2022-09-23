@@ -18,8 +18,8 @@ const Home: NextPage = () => {
       <div className="flex flex-col gap-10">
         <div className="flex gap-5 justify-between">
           <Link href="https://lewiscasewell.com">
-            <button className="p-2 font-bold border-pink-500 border-2 rounded-md text-pink-500 shadow-xl shadow-pink-500/30">
-              Back to site
+            <button className="p-2 font-bold rounded-md text-pink-500 ">
+              Back to portfolio
             </button>
           </Link>
           <Link href="/create">
@@ -29,7 +29,7 @@ const Home: NextPage = () => {
           </Link>
         </div>
         <div className="flex justify-center flex-col items-center mt-2">
-          <h1 className="text-4xl font-extrabold text-gray-100 underline">
+          <h1 className="text-4xl font-extrabold text-gray-100">
             Got a question?
           </h1>
           <h2 className="text-3xl">Start a poll...</h2>
@@ -37,8 +37,10 @@ const Home: NextPage = () => {
         <div className="w-full flex justify-center">
           <input
             className="w-full max-w-xl bg-gray-900/70 p-2 rounded-md"
-            placeholder="Or search for a question"
-            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search for an existing question"
+            onChange={(e) => {
+              setTimeout(() => setSearch(e.target.value), 1000);
+            }}
           />
         </div>
         <QuestionCards search={search} />

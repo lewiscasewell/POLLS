@@ -37,7 +37,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   };
 
   if (data && data != undefined) getTotalVotes(data.votes);
-  console.log(totalVotes);
+
   return (
     <div className="container w-screen min-h-screen p-6">
       <Head>
@@ -59,7 +59,11 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
 
         <div className="flex flex-col gap-4">
           {(data?.question?.options as string[])?.map((option, index) => {
-            if (data?.isOwner || data?.vote) {
+            if (
+              data?.isOwner ||
+              data?.vote ||
+              (data?.question && data?.question?.endsAt < new Date())
+            ) {
               return (
                 <div key={index}>
                   <div className="flex justify-between">

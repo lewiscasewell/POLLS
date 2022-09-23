@@ -12,8 +12,9 @@ import {
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
+import { GetServerSideProps } from "next";
 
-const CreateQuestionForm = () => {
+const CreateQuestionForm: React.FC<{ search: string }> = ({ search }) => {
   const router = useRouter();
 
   const tomorrow = add(new Date(), { days: 1 });
@@ -25,6 +26,7 @@ const CreateQuestionForm = () => {
   } = useForm<CreateQuestionInputType>({
     resolver: zodResolver(createQuestionValidator),
     defaultValues: {
+      question: search,
       endsAt: tomorrow,
       options: [{ text: "" }, { text: "" }],
     },
@@ -147,8 +149,16 @@ const CreateQuestionForm = () => {
   );
 };
 
-const QuestionCreator: React.FC = () => {
-  return <CreateQuestionForm />;
+const QuestionCreator: React.FC<{ search: string }> = ({ search }) => {
+  return <CreateQuestionForm search={search} />;
 };
 
 export default QuestionCreator;
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  return {
+    props: {
+      search: query.search || null,
+    },
+  };
+};

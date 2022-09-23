@@ -1,5 +1,6 @@
 import * as trpc from "@trpc/server";
 import { createNextApiHandler } from "@trpc/server/adapters/next";
+import { id } from "date-fns/locale";
 import { initScriptLoader } from "next/script";
 import { createDeflate } from "zlib";
 import { z } from "zod";
@@ -9,20 +10,37 @@ import { createRouter } from "./context";
 
 export const questionRouter = createRouter()
   .query("get-all", {
-    input: z.object({ search: z.string() }),
+    input: z.object({
+      search: z.string(),
+      limit: z.number().min(1).max(100).nullish(),
+      cursor: z.string().nullish(),
+    }),
     async resolve({ input }) {
+      const limit = input.limit ?? 5;
+      const { cursor } = input;
+
       const allQuestions = await prisma.pollQuestion.findMany({
+        take: limit + 1,
         where: {
           question: {
             contains: input.search,
           },
         },
+        cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
           createdAt: "desc",
         },
       });
+      let nextCursor: string | undefined = undefined;
+      if (allQuestions.length > limit) {
+        const nextItem = allQuestions.pop();
+        nextCursor = nextItem!.id;
+      }
 
-      return allQuestions;
+      return {
+        allQuestions,
+        nextCursor,
+      };
     },
   })
   .query("get-all-my-questions", {

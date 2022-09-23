@@ -23,7 +23,7 @@ const QuestionCard: React.FC<QuestionProps> = ({ question }) => {
 
   return (
     <Link href={`/question/${question.id}`}>
-      <div className="flex flex-col bg-gray-900/30 rounded-lg cursor-pointer shadow-lg h-[240px]">
+      <div className="flex flex-col bg-gray-900/50 hover:bg-gray-900/30 transition-colors ease-in rounded-lg cursor-pointer shadow-lg h-[240px]">
         <div className="h-full flex justify-center items-center text-center">
           {question.endsAt > new Date() && (
             <div>
@@ -62,26 +62,64 @@ const QuestionCard: React.FC<QuestionProps> = ({ question }) => {
 };
 
 const QuestionCards: React.FC<{ search: string }> = ({ search }) => {
-  const { data: allQuestions, isLoading: allQuestionsIsLoading } =
-    trpc.useQuery(["questions.get-all", { search }]);
+  const { data, isLoading, fetchNextPage, hasNextPage } = trpc.useInfiniteQuery(
+    ["questions.get-all", { search, limit: 10 }],
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
 
-  if (allQuestionsIsLoading || !allQuestions)
+  if (isLoading || !data)
     return (
       <div className="flex w-full h-full justify-center items-center">
         Loading...
       </div>
     );
 
+  console.log(data);
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-baseline">
-        <h1 className="text-2xl font-bold">Questions asked</h1>
+      <div className="flex justify-center items-baseline">
+        <h1 className="text-2xl font-bold text-center">
+          {data?.pages[0]?.allQuestions.length === 0
+            ? "No results"
+            : "Questions asked"}
+        </h1>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-        {allQuestions.map((question) => {
-          return <QuestionCard key={question.id} question={question} />;
+        {data.pages.map((page) => {
+          return page.allQuestions.map((question) => {
+            return <QuestionCard key={question.id} question={question} />;
+          });
         })}
       </div>
+      {data?.pages[0]?.allQuestions.length === 0 ? (
+        <div className="w-full flex justify-center mt-10 items-center">
+          <Link href={{ pathname: "create", search }}>
+            <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
+              Ask this question
+            </button>
+          </Link>
+        </div>
+      ) : (
+        <>
+          {hasNextPage && (
+            <button onClick={() => fetchNextPage()}>fetch</button>
+          )}
+          {!hasNextPage && (
+            <div className="w-full flex flex-col justify-center mt-5 gap-3 items-center">
+              <p>No more questions</p>
+              <Link href="/create">
+                <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
+                  Ask a question
+                </button>
+              </Link>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
