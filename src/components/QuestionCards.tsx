@@ -23,15 +23,23 @@ const QuestionCard: React.FC<QuestionProps> = ({ question }) => {
 
   return (
     <Link href={`/question/${question.id}`}>
-      <div className="flex flex-col bg-gray-900/50 hover:bg-gray-900/30 transition-colors ease-in rounded-lg cursor-pointer shadow-lg h-[240px]">
-        <div className="h-full flex justify-center items-center text-center">
+      <div className="flex flex-col bg-gray-900/50 hover:bg-gray-900/30 transition-colors ease-in rounded-lg cursor-pointer shadow-lg h-[240px] overflow-scroll">
+        <div className=" flex justify-center items-center text-center h-[160px] overflow-scroll">
+          <h1 className="font-semibold text-2xl p-4 text-gray-300">
+            {question.question}
+          </h1>
+        </div>
+        <div className="py-3 px-4 flex justify-between items-center bg-gray-900 rounded-b-lg min-h-[80px]">
+          <p className=" text-xs">{question.createdAt.toDateString()}</p>
           {question.endsAt > new Date() && (
             <div>
-              <p>TIME REMAINING</p>
-              <h1 className="text-6xl ">{`${hours?.toLocaleString("en-US", {
-                minimumIntegerDigits: 2,
-                useGrouping: false,
-              })}:${minutes?.toLocaleString("en-US", {
+              <h1 className="text-md text-pink-500">{`${hours?.toLocaleString(
+                "en-US",
+                {
+                  minimumIntegerDigits: 2,
+                  useGrouping: false,
+                }
+              )}:${minutes?.toLocaleString("en-US", {
                 minimumIntegerDigits: 2,
                 useGrouping: false,
               })}:${seconds?.toLocaleString("en-US", {
@@ -49,12 +57,6 @@ const QuestionCard: React.FC<QuestionProps> = ({ question }) => {
               </Link>
             </div>
           )}
-        </div>
-        <div className="p-3 flex flex-col bg-gray-900 rounded-b-lg">
-          <a className="font-semibold text-lg text-pink-400">
-            {question.question}
-          </a>
-          <span className=" text-xs">{question.createdAt.toDateString()}</span>
         </div>
       </div>
     </Link>
