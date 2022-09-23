@@ -47,8 +47,8 @@ const CreateQuestionForm: React.FC = () => {
 
   if (isLoading || data)
     return (
-      <div className="flex items-center justify-center min-h-screen antialiased">
-        <p className="text-white/40">Loading...</p>
+      <div className="min-h-screen w-full flex justify-center">
+        <p className="mt-20">Loading...</p>
       </div>
     );
 

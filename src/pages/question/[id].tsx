@@ -7,7 +7,7 @@ import { getBaseUrl } from "../_app";
 
 const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   const router = useRouter();
-  const { data } = trpc.useQuery(["questions.get-by-id", { id }]);
+  const { data, isLoading } = trpc.useQuery(["questions.get-by-id", { id }]);
   let totalVotes = 0;
 
   const { mutate, data: voteResponse } = trpc.useMutation(
@@ -23,7 +23,13 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   );
 
   if (!data || !data?.question) {
-    return <div>Question not found</div>;
+    return (
+      <div className="min-h-screen w-full flex justify-center">
+        <p className="mt-20">
+          {isLoading ? "Loading..." : "Question not found"}
+        </p>
+      </div>
+    );
   }
 
   const getTotalVotes = (votes: any) => {
@@ -164,7 +170,11 @@ const QuestionPage = () => {
   const { id } = query;
 
   if (!id || typeof id !== "string") {
-    return <div>No ID</div>;
+    return (
+      <div className="min-h-screen w-full flex justify-center">
+        <p className="mt-20">Loading...</p>
+      </div>
+    );
   }
 
   return <QuestionsPageContent id={id} />;
