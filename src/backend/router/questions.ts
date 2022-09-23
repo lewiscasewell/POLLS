@@ -9,12 +9,20 @@ import { createRouter } from "./context";
 
 export const questionRouter = createRouter()
   .query("get-all", {
-    async resolve() {
-      return await prisma.pollQuestion.findMany({
+    input: z.object({ search: z.string() }),
+    async resolve({ input }) {
+      const allQuestions = await prisma.pollQuestion.findMany({
+        where: {
+          question: {
+            contains: input.search,
+          },
+        },
         orderBy: {
           createdAt: "desc",
         },
       });
+
+      return allQuestions;
     },
   })
   .query("get-all-my-questions", {
@@ -101,6 +109,7 @@ export const questionRouter = createRouter()
         data: {
           question: input.question,
           options: input.options,
+          endsAt: input.endsAt,
           ownerToken: ctx.token,
         },
       });

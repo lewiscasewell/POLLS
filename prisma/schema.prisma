@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -16,16 +16,17 @@ model PollQuestion {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  endsAt DateTime?
+  endsAt DateTime
 
   question String @db.VarChar(5000)
 
   ownerToken String @db.VarChar(255)
 
   options Json
-  Vote    Vote[]
+  vote    Vote[]
 
   @@index([ownerToken])
+  @@fulltext([question])
 }
 
 model Vote {

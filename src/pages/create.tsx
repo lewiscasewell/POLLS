@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { trpc } from "../utils/trpc";
+import { add } from "date-fns";
 
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -14,6 +15,8 @@ import Link from "next/link";
 
 const CreateQuestionForm = () => {
   const router = useRouter();
+
+  const tomorrow = add(new Date(), { days: 1 });
   const {
     register,
     handleSubmit,
@@ -22,6 +25,7 @@ const CreateQuestionForm = () => {
   } = useForm<CreateQuestionInputType>({
     resolver: zodResolver(createQuestionValidator),
     defaultValues: {
+      endsAt: tomorrow,
       options: [{ text: "" }, { text: "" }],
     },
   });
@@ -44,6 +48,8 @@ const CreateQuestionForm = () => {
         <p className="text-white/40">Loading...</p>
       </div>
     );
+
+  console.log(errors);
 
   return (
     <div className="min-h-screen p-6 antialiased text-gray-100">

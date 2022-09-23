@@ -1,21 +1,13 @@
 import type { NextPage } from "next";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useEffect } from "react";
-import { trpc } from "../utils/trpc";
+import React from "react";
+
+const QuestionCards = dynamic(import("../components/QuestionCards"));
 
 const Home: NextPage = () => {
-  const [questionsSelect, setQuestionsSelect] = React.useState();
-  const { data: allQuestions, isLoading: allQuestionsIsLoading } =
-    trpc.useQuery(["questions.get-all"]);
-
-  const { data: myQuestions, isLoading: myQuestionsIsLoading } = trpc.useQuery([
-    "questions.get-all-my-questions",
-  ]);
-
-  if (allQuestionsIsLoading || !allQuestions) return <div>Loading...</div>;
-  if (myQuestionsIsLoading || !myQuestions) return <div>Loading...</div>;
-
+  const [search, setSearch] = React.useState("");
   return (
     <div className="flex flex-col p-6 max-w-5xl mx-auto h-full min-h-screen">
       <Head>
@@ -24,78 +16,32 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col gap-10">
+        <div className="flex gap-5 justify-between">
+          <Link href="https://lewiscasewell.com">
+            <button className="p-2 font-bold border-pink-500 border-2 rounded-md text-pink-500 shadow-xl shadow-pink-500/30">
+              Back to site
+            </button>
+          </Link>
+          <Link href="/create">
+            <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
+              New question
+            </button>
+          </Link>
+        </div>
         <div className="flex justify-center flex-col items-center mt-2">
           <h1 className="text-4xl font-extrabold text-gray-100 underline">
             Got a question?
           </h1>
           <h2 className="text-3xl">Start a poll...</h2>
-          <div className="mt-7 flex gap-5">
-            <Link href="https://lewiscasewell.com">
-              <button className="p-2 font-bold border-pink-500 border-2 rounded-md text-pink-500 shadow-xl shadow-pink-500/30">
-                Back to site
-              </button>
-            </Link>
-            <Link href="/create">
-              <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
-                New question
-              </button>
-            </Link>
-          </div>
         </div>
-        {/* <>
-          {myQuestions.length > 0 && (
-            <div>
-              <div className="flex justify-between items-baseline">
-                <h1 className="text-2xl font-bold mb-3">My questions</h1>
-            
-              </div>
-              <div className="flex flex-col-reverse gap-2">
-                {myQuestions.map((question) => {
-                  return (
-                    <Link key={question.id} href={`/question/${question.id}`}>
-                      <a>
-                        <span>{question.question}</span>
-                      </a>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </> */}
-        <div>
-          <div className="flex justify-between items-baseline">
-            <h1 className="text-2xl font-bold mb-3">Questions asked</h1>
-            {/* <select>
-              <option>All questions</option>
-              <option>My questions</option>
-            </select> */}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 grid-">
-            {allQuestions.map((question) => {
-              return (
-                <Link key={question.id} href={`/question/${question.id}`}>
-                  <div className="flex flex-col bg-gray-900/30 rounded-lg cursor-pointer shadow-lg h-[240px]">
-                    <div className="h-full flex justify-center items-center text-center">
-                      <div>
-                        <h1 className="text-6xl ">20</h1>
-                        <p>votes</p>
-                      </div>
-                    </div>
-                    <div className="p-3 flex flex-col bg-gray-900 rounded-b-lg">
-                      <a className="font-semibold text-lg text-pink-400">
-                        {question.question}
-                      </a>
-                      <span className=" text-xs">
-                        {question.createdAt.toDateString()}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+        <div className="w-full flex justify-center">
+          <input
+            className="w-full max-w-xl bg-gray-900/70 p-2 rounded-md"
+            placeholder="Or search for a question"
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
+        <QuestionCards search={search} />
       </div>
     </div>
   );

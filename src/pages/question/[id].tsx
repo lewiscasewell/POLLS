@@ -37,7 +37,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   };
 
   if (data && data != undefined) getTotalVotes(data.votes);
-
+  console.log(totalVotes);
   return (
     <div className="container w-screen min-h-screen p-6">
       <Head>
