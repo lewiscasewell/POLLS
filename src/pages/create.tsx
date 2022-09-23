@@ -53,7 +53,7 @@ const CreateQuestionForm: React.FC = () => {
     );
 
   return (
-    <div className="min-h-screen max-w-5xl mx-auto p-6 antialiased text-gray-100">
+    <div className="min-h-screen max-w-5xl mx-auto p-4 antialiased text-gray-100">
       <Head>
         <title>Start a poll</title>
       </Head>

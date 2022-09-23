@@ -65,7 +65,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   const shareLink = `polls.lewiscasewell.com${router.asPath}`;
 
   return (
-    <div className="max-w-5xl p-6 mx-auto min-h-screen">
+    <div className="max-w-5xl p-4 mx-auto min-h-screen">
       <Head>
         <title>{data?.question?.question}</title>
       </Head>
@@ -155,13 +155,16 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
             </Link>
           )}
           <button
-            onClick={() =>
-              navigator.share({
-                title: data.question?.question,
-                text: data.question?.question,
-                url: shareLink,
-              })
-            }
+            onClick={() => {
+              navigator.clipboard.writeText(shareLink);
+              navigator
+                .share({
+                  title: data.question?.question,
+                  text: data.question?.question,
+                  url: shareLink,
+                })
+                .catch(() => navigator.clipboard.writeText(shareLink));
+            }}
             className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30"
           >
             Share question
