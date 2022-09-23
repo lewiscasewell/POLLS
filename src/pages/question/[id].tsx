@@ -2,6 +2,7 @@ import { PollQuestion, Prisma, Vote } from "@prisma/client";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { optional } from "zod";
 import { trpc } from "../../utils/trpc";
 
 const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
@@ -38,8 +39,25 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
 
   if (data && data != undefined) getTotalVotes(data.votes);
 
+  const newArray = (data?.question?.options as string[]).map(
+    (option, index) => ({ index, text: (option as any).text })
+  );
+
+  let merged = [];
+
+  for (let i = 0; i < newArray.length; i++) {
+    merged.push({
+      ...newArray[i],
+      ...data.votes?.find(
+        (itemInnder) => itemInnder.choice === newArray[i]?.index
+      ),
+    });
+  }
+
+  console.log(merged);
+
   return (
-    <div className="container w-screen min-h-screen p-6">
+    <div className="max-w-2xl min-h-screen p-6 mx-auto">
       <Head>
         <title>Question | {data?.question?.question}</title>
       </Head>
@@ -52,53 +70,85 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
         )}
       </header>
 
-      <main className="max-w-2xl mx-auto">
-        <h1 className="mb-10 text-2xl font-bold text-center">
-          {data?.question?.question}
-        </h1>
-
-        <div className="flex flex-col gap-4">
-          {(data?.question?.options as string[])?.map((option, index) => {
-            if (
-              data?.isOwner ||
-              data?.vote ||
-              (data?.question && data?.question?.endsAt < new Date())
-            ) {
-              return (
-                <div key={index}>
-                  <div className="flex justify-between">
-                    <p className="font-bold">{(option as any).text}</p>
-                    <p>
-                      {getPercent(data?.votes?.[index]?._count)?.toFixed()}%
-                    </p>
-                  </div>
-                  <progress
-                    className="w-full progress progress-secondary"
-                    value={data?.votes?.[index]?._count ?? 0}
-                    max={totalVotes}
-                  ></progress>
-                  <p>
-                    {!data?.votes?.[index]?._count
-                      ? "No"
-                      : data?.votes?.[index]?._count}{" "}
-                    {data?.votes?.[index]?._count === 1 ? "vote" : "votes"}
-                  </p>
-                </div>
-              );
-            }
-
-            return (
-              <button
-                onClick={() =>
-                  mutate({ questionId: data.question!.id, option: index })
+      <main>
+        <>
+          <h1 className="mb-10 text-2xl font-bold text-center">
+            {data?.question?.question}
+          </h1>
+          <div className="flex flex-col gap-4">
+            {merged.map((option, index) => {
+              if (
+                data?.isOwner ||
+                data?.vote ||
+                (data?.question && data?.question?.endsAt < new Date())
+              ) {
+                if (option._count) {
+                  return (
+                    <div className="w-full flex flex-col" key={index}>
+                      <div className="flex justify-between">
+                        <p>{option.text}</p>
+                        <p>{getPercent(option._count)?.toFixed()}%</p>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div
+                          style={{
+                            width: `${getPercent(option._count)?.toFixed()}%`,
+                          }}
+                          className={`h-2 bg-pink-500 rounded`}
+                        />
+                      </div>
+                      <div>
+                        <p>{option._count} votes</p>
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className="w-full flex flex-col" key={index}>
+                      <div className="flex justify-between">
+                        <p>{option.text}</p>
+                        <p>0%</p>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div
+                          style={{
+                            width: `0%`,
+                          }}
+                          className={`h-2 bg-pink-500 rounded`}
+                        />
+                      </div>
+                      <div>
+                        <p>0 votes</p>
+                      </div>
+                    </div>
+                  );
                 }
-                key={index}
-                className="btn"
-              >
-                {(option as any).text}
+              }
+              return (
+                <button
+                  onClick={() =>
+                    mutate({ questionId: data.question!.id, option: index })
+                  }
+                  key={index}
+                  className="bg-gray-700/50 p-2 font-bold rounded-md hover:bg-gray-700 transition-colors ease-in"
+                >
+                  {(option as any).text}
+                </button>
+              );
+            })}
+          </div>
+        </>
+        <div className="mt-12 flex justify-center w-full gap-4">
+          {data?.question && data?.question?.endsAt < new Date() && (
+            <Link href="/create">
+              <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
+                Ask this again
               </button>
-            );
-          })}
+            </Link>
+          )}
+          <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
+            Share question
+          </button>
         </div>
       </main>
     </div>
