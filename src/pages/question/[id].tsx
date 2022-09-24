@@ -145,7 +145,9 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
         </>
         <div className="mt-12 flex justify-center w-full gap-4">
           {data?.question && data?.question?.endsAt < new Date() && (
-            <Link href={{ pathname: "create", search: data.question.question }}>
+            <Link
+              href={{ pathname: "/create", search: data.question.question }}
+            >
               <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
                 Ask this again
               </button>
