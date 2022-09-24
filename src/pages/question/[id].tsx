@@ -156,6 +156,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
               navigator
                 .share({
                   title: data.question?.question,
+                  text: data.question?.question,
                   url: router.asPath,
                 })
                 .catch(() => navigator.clipboard.writeText(shareLink));
