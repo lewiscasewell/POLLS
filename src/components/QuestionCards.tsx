@@ -23,7 +23,7 @@ const QuestionCard: React.FC<QuestionProps> = ({ question }) => {
 
   return (
     <Link href={`/question/${question.id}`}>
-      <div className="flex flex-col bg-gray-900/50 hover:bg-gray-900/30 transition-colors ease-in rounded-lg cursor-pointer shadow-lg h-[240px] overflow-scroll">
+      <div className="flex flex-col bg-gray-900/50 hover:bg-gray-900/30 transition-colors ease-in rounded-lg cursor-pointer shadow-lg h-[240px] overflow-hidden">
         <div className=" flex justify-center items-center text-center h-[160px] overflow-hide">
           <h1 className="font-semibold text-2xl p-4 text-gray-300">
             {question.question}
