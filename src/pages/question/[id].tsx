@@ -153,11 +153,10 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
           )}
           <button
             onClick={() => {
-              navigator.clipboard.writeText(shareLink);
               navigator
                 .share({
                   title: data.question?.question,
-                  url: shareLink,
+                  url: router.asPath,
                 })
                 .catch(() => navigator.clipboard.writeText(shareLink));
             }}
