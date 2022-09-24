@@ -87,7 +87,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
                 data?.vote ||
                 (data?.question && data?.question?.endsAt < new Date())
               ) {
-                if (option._count) {
+                if (option?._count) {
                   return (
                     <div className="w-full flex flex-col" key={index}>
                       <div className="flex justify-between">
@@ -107,7 +107,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
                       </div>
                     </div>
                   );
-                } else {
+                } else if (!option?._count) {
                   return (
                     <div className="w-full flex flex-col" key={index}>
                       <div className="flex justify-between">
