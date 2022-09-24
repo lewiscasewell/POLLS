@@ -153,13 +153,12 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
           )}
           <button
             onClick={() => {
-              navigator
-                .share({
-                  title: data.question?.question,
-                  text: data.question?.question,
-                  url: router.asPath,
-                })
-                .catch(() => navigator.clipboard.writeText(shareLink));
+              navigator.clipboard.writeText(shareLink);
+              navigator.share({
+                title: data.question?.question,
+                text: data.question?.question,
+                url: router.asPath,
+              });
             }}
             className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30"
           >
