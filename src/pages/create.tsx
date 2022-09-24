@@ -72,11 +72,6 @@ const CreateQuestionForm: React.FC = () => {
         >
           <div className="w-full">
             <div className="w-full">
-              <label className="label">
-                <span className="text-base font-semibold label-text">
-                  Your Question
-                </span>
-              </label>
               <input
                 {...register("question")}
                 type="text"
