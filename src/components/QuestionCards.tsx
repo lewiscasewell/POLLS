@@ -24,7 +24,7 @@ const QuestionCard: React.FC<QuestionProps> = ({ question }) => {
   return (
     <Link href={`/question/${question.id}`}>
       <div className="flex flex-col bg-gray-900/50 hover:bg-gray-900/30 transition-colors ease-in rounded-lg cursor-pointer shadow-lg h-[240px] overflow-scroll">
-        <div className=" flex justify-center items-center text-center h-[160px] overflow-scroll">
+        <div className=" flex justify-center items-center text-center h-[160px] overflow-hide">
           <h1 className="font-semibold text-2xl p-4 text-gray-300">
             {question.question}
           </h1>
@@ -79,7 +79,7 @@ const QuestionCards: React.FC<{ search: string }> = ({ search }) => {
     );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mb-10">
       <div className="flex justify-center items-baseline">
         <h1 className="text-2xl font-bold text-center">
           {data?.pages[0]?.allQuestions.length === 0
@@ -106,7 +106,14 @@ const QuestionCards: React.FC<{ search: string }> = ({ search }) => {
       ) : (
         <>
           {hasNextPage && (
-            <button onClick={() => fetchNextPage()}>fetch</button>
+            <div className="w-full flex justify-center mt-5">
+              <button
+                onClick={() => fetchNextPage()}
+                className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30"
+              >
+                Load more
+              </button>
+            </div>
           )}
           {!hasNextPage && (
             <div className="w-full flex flex-col justify-center mt-5 gap-3 items-center">

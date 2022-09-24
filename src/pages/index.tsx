@@ -35,13 +35,15 @@ const Home: NextPage = () => {
           <h2 className="text-3xl">Start a poll...</h2>
         </div>
         <div className="w-full flex justify-center">
-          <input
-            className="w-full max-w-xl bg-gray-900/70 p-3 rounded-md shadow-lg "
-            placeholder="Search for an existing question"
-            onChange={(e) => {
-              setTimeout(() => setSearch(e.target.value), 1000);
-            }}
-          />
+          <div className="w-full max-w-xl rounded-md shadow-lg">
+            <input
+              className="w-full bg-gray-900/70 p-3 rounded-md "
+              placeholder="Search for an existing question"
+              onChange={(e) => {
+                setTimeout(() => setSearch(e.target.value), 1000);
+              }}
+            />
+          </div>
         </div>
         <QuestionCards search={search} />
       </div>

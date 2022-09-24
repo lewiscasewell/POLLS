@@ -1,10 +1,7 @@
-import { PollQuestion, Prisma, Vote } from "@prisma/client";
-import { url } from "inspector";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import { getBaseUrl } from "../_app";
 
 const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   const router = useRouter();
@@ -62,7 +59,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
     });
   }
 
-  const shareLink = `polls.lewiscasewell.com${router.asPath}`;
+  const shareLink = `https://polls.lewiscasewell.com${router.asPath}`;
 
   return (
     <div className="max-w-5xl p-4 mx-auto min-h-screen">
@@ -148,7 +145,7 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
         </>
         <div className="mt-12 flex justify-center w-full gap-4">
           {data?.question && data?.question?.endsAt < new Date() && (
-            <Link href="/create">
+            <Link href={{ pathname: "create", search: data.question.question }}>
               <button className="bg-pink-500 p-2 font-bold rounded-md hover:bg-pink-600 transition-colors ease-in shadow-xl shadow-pink-500/30">
                 Ask this again
               </button>
@@ -160,7 +157,6 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
               navigator
                 .share({
                   title: data.question?.question,
-                  text: data.question?.question,
                   url: shareLink,
                 })
                 .catch(() => navigator.clipboard.writeText(shareLink));
