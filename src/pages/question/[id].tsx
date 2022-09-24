@@ -53,11 +53,13 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
   for (let i = 0; i < newArray.length; i++) {
     merged.push({
       ...newArray[i],
-      ...data.votes?.find(
+      ...data?.votes?.find(
         (itemInnder) => itemInnder.choice === newArray[i]?.index
       ),
     });
   }
+
+  console.log(data);
 
   const shareLink = `https://polls.lewiscasewell.com${router.asPath}`;
 
@@ -103,7 +105,10 @@ const QuestionsPageContent: React.FC<{ id: string }> = ({ id }) => {
                         />
                       </div>
                       <div>
-                        <p>{option._count} votes</p>
+                        <p>
+                          {option._count}{" "}
+                          {option._count === 1 ? "vote" : "votes"}
+                        </p>
                       </div>
                     </div>
                   );
